@@ -9,4 +9,8 @@ class LoteriaService(val lotofacilClient: LotofacilClient) {
     fun getResultados(): List<LoteriaDto> {
         return lotofacilClient.getResultados()
     }
+
+    fun getSorteio(numero: Int): LoteriaDto? {
+        return lotofacilClient.getSorteio(numero)
+    }
 }
