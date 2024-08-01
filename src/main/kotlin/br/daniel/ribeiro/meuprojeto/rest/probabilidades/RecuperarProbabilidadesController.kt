@@ -21,11 +21,12 @@ class RecuperarProbabilidadesController(
     @GetMapping("/probabilidades")
     fun probabilidades(
         @RequestParam quantidadeSorteios: Int,
+        @RequestParam dividirPor: String,
         @RequestParam ultimoSorteioConsiderado: Int
     ): ResponseEntity<Any> {
         logger.info("Recuperando probabilidades dos últimos sorteios!")
 
-        val probabilidades = probabilidadeService.getProbabilidades(quantidadeSorteios, ultimoSorteioConsiderado)
+        val probabilidades = probabilidadeService.getProbabilidades(quantidadeSorteios, dividirPor, ultimoSorteioConsiderado)
 
         return ResponseEntity(probabilidades, HttpStatus.OK)
     }

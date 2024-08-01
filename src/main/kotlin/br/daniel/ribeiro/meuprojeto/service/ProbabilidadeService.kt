@@ -10,7 +10,11 @@ import org.springframework.stereotype.Service
 class ProbabilidadeService(val loteriaService: LoteriaService) {
     private val logger: Logger = LoggerFactory.getLogger(ProbabilidadeService::class.java)
 
-    fun getProbabilidades(quantidadeSorteios: Int, ultimoSorteioConsiderado: Int): ConteudoProbabilidadeDto {
+    fun getProbabilidades(
+        quantidadeSorteios: Int,
+        dividirPor: String,
+        ultimoSorteioConsiderado: Int
+    ): ConteudoProbabilidadeDto {
         val resultados = loteriaService.getResultados()
 
         val frequenciaDezenas = mutableMapOf<String, Int>()
@@ -25,23 +29,19 @@ class ProbabilidadeService(val loteriaService: LoteriaService) {
             }
         }
 
-        // Ordenar por frequência
-//        val frequenciaDezenasOrdenadas = frequenciaDezenas.entries.sortedByDescending { it.value }
-
-//        logger.info("Frequência das dezenas:")
-//        frequenciaDezenasOrdenadas.forEach { (dezena, frequencia) ->
-//            logger.info("Dezena: $dezena, Frequência: $frequencia")
-//        }
-
-        // Filtrar dezenas com frequência maior que 10
-        val frequencia = quantidadeSorteios / 1.7
-        logger.info("Frequência quantidade dividido por 2: $frequencia")
+        // Calcular probabilidade de acordo com divisor
+        val frequencia = quantidadeSorteios / dividirPor.toFloat()
+        logger.info(
+            "Frequência: $frequencia," +
+                    " Quantidade: $quantidadeSorteios," +
+                    " dividido por: $dividirPor"
+        )
 
         val dezenasFrequentes = frequenciaDezenas.filter { it.value > frequencia }.keys.toList()
 
         val conteudo = ConteudoProbabilidadeDto(ultimoSorteioConsiderado = ultimosSorteios.first().concurso)
 
-        logger.info("DEZENAS PARA GERAR NÚMEROS: ${dezenasFrequentes.size} ")
+        logger.info("TOTAL DE DEZENAS PARA GERAR NÚMEROS: ${dezenasFrequentes.size}")
 
         if (dezenasFrequentes.size < 15) {
             logger.info("Não há dezenas suficientes com frequência maior que $frequencia para gerar um jogo.")
@@ -58,7 +58,7 @@ class ProbabilidadeService(val loteriaService: LoteriaService) {
                 )
             }
 
-            logger.info("Jogo 1: $conteudo.probabilidades")
+//            logger.info("Jogo 1: $conteudo.probabilidades")
         }
 
         return conteudo
